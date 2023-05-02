@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+    <title>Coder Ferdaws</title>
+    <link rel="stylesheet" href="player.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Rock+Salt&display=swap" rel="stylesheet">
+
+</head>
+<body id="body">
+<main id="player">
+    <header>
+        <img src="img.png"/>
+        <h2>LIVE RADIO</h2>
+        <p id="title_radio">Radio 1</p>
+    </header>
+    <div id="content">
+        <article id="boutons">
+            <img id="pr" src="skip_previous.png" />
+            <img id="pl" src="play_arrow.png" />
+            <img id="nx" src="skip_next.png" />
+            <audio id="audio" src="Faded.mp3" ></audio>
+        </article>
+        <article id="volume">
+            <h2>Volume</h2>
+            <input type="range" id="volume_range">
+            <h2>Vitesse</h2>
+            <input type="range" id="speed_range" max="200" min="0">
+        </article>
+
+        <article id="color">
+            <button id="couleur1"></button>
+            <button id="couleur2"></button>
+            <button id="couleur3"></button>
+            <button id="couleur4"></button>
+        </article>
+        
+    </div>
+    
+
+</main>  
+
+
+    
+
+
+</body>
+<script src="color.js"></script>
+<script  src="volume.js"></script>
+<script>
+class Player{
+    constructor(){
+        var mainPlayer=document.getElementById("player");
+        mainPlayer.style.height=screen.height+"px";
+
+        if(screen.width<500){
+            mainPlayer.style.width=screen.width+"px";
+        }
+
+        var contentDiv=document.getElementById("content");
+          contentDiv.style.height=screen.height-300+"px"; // A expliquer
+
+    }
+}
+
+onload=new Player();
+
+//classe buttons
+
+class Audio_player{
+    constructor(){
+        this.audio_file=document.getElementById("audio");
+        this.title_radio=document.getElementById("title_radio");
+        this.play_pause_btn=document.getElementById("pl");
+        this.isPlayed;
+        this.play_pause_btn.addEventListener("click",()=>{
+            this.play_pause();
+
+        });
+
+        this.names_radio=[];
+        this.names_radio[0]="RADIO ALGER";
+        this.names_radio[1]="RADIO IFM";
+        this.names_radio[2]="RADIO MOSAIQUE FM";
+
+        this.sources_audio=[];
+        this.sources_audio[0]="https://webradio.tda.dz/Bouira_64K.mp3";
+        this.sources_audio[1]="https://live.ifm.tn/radio/8000/ifmlive";
+        this.sources_audio[2]="https://radio.mosaiquefm.net/mosalive";
+        this.server=0;
+        this.set_ressource();
+
+        document.getElementById("nx").addEventListener("click",()=>{
+            if(this.server<this.sources_audio.length-1){
+                ++this.server;
+                this.isPlayed=false;
+            }
+            else{
+                this.server=0;
+            }
+            localStorage.setItem("SAVE",this.server);
+            this.set_ressource();
+        });
+
+        document.getElementById("pr").addEventListener("click",()=>{
+
+            if(this.server>0){
+                --this.server;
+                this.isPlayed=false;
+            }
+            else{
+                this.server=this.sources_audio.length-1;
+            }
+            localStorage.setItem("SAVE",this.server);
+            this.set_ressource();
+            
+        });
+    }
+
+
+    set_ressource(){
+
+        if(localStorage.getItem("SAVE")!= null ){
+            this.server=localStorage.getItem("SAVE");
+        }
+
+        this.audio_file.src=this.sources_audio[this.server];
+        this.title_radio.innerHTML=this.names_radio[this.server];
+        this.play_pause();
+    }
+
+    play_pause(){
+    if(this.isPlayed==false){
+        this.play_pause_btn.src="pause.png";
+        this.play_pause_btn.style.width="70px";
+       this.play_pause_btn.style.width="70px";
+        this.audio_file.play();
+        this.isPlayed=true;
+    }else{
+        
+       this.play_pause_btn.src="play_arrow.png";
+      
+
+        this.audio_file.pause();
+
+        this.isPlayed=false;
+    }
+
+
+
+
+}
+}
+
+onload=new Audio_player();
+
+
+</script> 
+</html>
